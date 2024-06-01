@@ -1,11 +1,16 @@
+"use client";
 import Image from "next/image";
 import { Articles, shareLinks } from "../lib/data";
 import shareIcon from "../public/images/icon-share.svg";
+import { useState } from "react";
 
 export default function Article({ articleTitle }: { articleTitle: string }) {
   const article = Articles.find(
     (article) => article.title.toLowerCase() === articleTitle.toLowerCase(),
   );
+  const [share, setShare] = useState(false);
+
+  const handleClick = () => {};
 
   if (!article) {
     return <div>No articles to show</div>;
@@ -17,9 +22,10 @@ export default function Article({ articleTitle }: { articleTitle: string }) {
         <Image
           src={article.img}
           alt="Article Image"
-          fill
+          width={640}
+          height={640}
           priority
-          className="object-cover object-center"
+          className="-mt-4 object-cover object-top"
         />
       </div>
       <div className="px-8 pb-6 pt-8">
@@ -43,7 +49,10 @@ export default function Article({ articleTitle }: { articleTitle: string }) {
               <p className="text-ac-grayish-blue">{article.date}</p>
             </div>
           </div>
-          <button className="flex h-8 w-8 items-center justify-center rounded-full bg-ac-light-grayish-blue">
+          <button
+            onClick={handleClick}
+            className="flex h-8 w-8 items-center justify-center rounded-full bg-ac-light-grayish-blue"
+          >
             <Image src={shareIcon} alt="share icon" className="object-center" />
           </button>
         </div>
