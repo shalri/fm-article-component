@@ -28,13 +28,13 @@ export const shareLinks = [
     url: "#",
   },
   {
-    site: "Pinterest",
-    icon: PinterestIcon,
+    site: "Twitter",
+    icon: TwitterIcon,
     url: "#",
   },
   {
-    site: "Twitter",
-    icon: TwitterIcon,
+    site: "Pinterest",
+    icon: PinterestIcon,
     url: "#",
   },
 ];

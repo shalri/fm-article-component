@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import { Articles, shareLinks } from "../lib/data";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 
 export default function Article({ articleTitle }: { articleTitle: string }) {
@@ -11,6 +11,9 @@ export default function Article({ articleTitle }: { articleTitle: string }) {
   const [share, setShare] = useState(false);
   const [animate, setAnimate] = useState(false);
   const [isWideScreen, setIsWideScreen] = useState(false);
+  const [tooltipVisible, setTooltipVisible] = useState(false);
+
+  const shareRef = useRef(null);
 
   useEffect(() => {
     const updateScreenWidth = () => {
@@ -25,7 +28,7 @@ export default function Article({ articleTitle }: { articleTitle: string }) {
 
   const handleClick = () => {
     if (isWideScreen) {
-      console.log("hello");
+      setTooltipVisible(!tooltipVisible);
     } else {
       setAnimate(!animate);
       setShare(!share);
@@ -37,8 +40,13 @@ export default function Article({ articleTitle }: { articleTitle: string }) {
   }
 
   return (
-    <article className="grid max-w-[400px] grid-rows-1 overflow-hidden rounded-xl bg-white tracking-[0.01rem] sm:max-w-[732px] sm:grid-cols-[40%_60%]">
-      <div className="relative h-[200px] w-full overflow-hidden sm:h-auto sm:w-full">
+    <article
+      className={cn(
+        "relative grid max-w-[400px] grid-rows-1 rounded-xl bg-white tracking-[0.01rem] sm:max-w-[732px] sm:grid-cols-[40%_60%]",
+        !isWideScreen ? "overflow-hidden" : "",
+      )}
+    >
+      <div className="relative h-[200px] w-full overflow-hidden sm:h-auto sm:w-full sm:rounded-l-xl">
         <Image
           src={article.img}
           alt="Article Image"
@@ -57,7 +65,7 @@ export default function Article({ articleTitle }: { articleTitle: string }) {
         </p>
         <footer
           className={cn(
-            "mt-8 flex w-full items-center justify-between sm:mb-2 sm:mt-4",
+            "relative mt-8 flex w-full items-center justify-between sm:mb-2 sm:mt-4",
             share && animate
               ? "fade-in-bounce bg-ac-very-dark-grayish-blue"
               : "bg-white pb-6",
@@ -94,6 +102,24 @@ export default function Article({ articleTitle }: { articleTitle: string }) {
                   </h2>
                   <p className="text-ac-grayish-blue">{article.date}</p>
                 </div>
+              </div>
+            </div>
+          )}
+          {tooltipVisible && (
+            <div className="fade-in-bounce tooltip -right-[70px] -top-[5rem] mt-2 rounded-lg bg-ac-very-dark-grayish-blue px-8 py-4 shadow-lg">
+              <div className="flex">
+                <h3 className="top-full z-50 pr-4 text-body uppercase tracking-[0.4rem] text-ac-grayish-blue">
+                  share
+                </h3>
+                <ul className="flex items-center gap-4">
+                  {shareLinks.map((link) => (
+                    <li key={link.site}>
+                      <a href={link.url}>
+                        <Image src={link.icon} alt={link.site} />
+                      </a>
+                    </li>
+                  ))}
+                </ul>
               </div>
             </div>
           )}
