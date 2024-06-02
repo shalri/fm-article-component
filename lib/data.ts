@@ -25,7 +25,7 @@ export const shareLinks = [
   {
     site: "Facebook",
     icon: FacebookIcon,
-    url: "#",
+    url: "https://github.com/shalri",
   },
   {
     site: "Twitter",

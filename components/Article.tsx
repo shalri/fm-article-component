@@ -3,6 +3,7 @@ import Image from "next/image";
 import { Articles, shareLinks } from "../lib/data";
 import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
+import Link from "next/link";
 
 export default function Article({ articleTitle }: { articleTitle: string }) {
   const article = Articles.find(
@@ -13,17 +14,44 @@ export default function Article({ articleTitle }: { articleTitle: string }) {
   const [isWideScreen, setIsWideScreen] = useState(false);
   const [tooltipVisible, setTooltipVisible] = useState(false);
 
-  const shareRef = useRef(null);
+  const shareRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const updateScreenWidth = () => {
       setIsWideScreen(window.innerWidth > 640);
+      // Close share links when screen dimensions change
+      setTooltipVisible(false);
+      setShare(false);
+      setAnimate(false);
     };
 
     updateScreenWidth();
     window.addEventListener("resize", updateScreenWidth);
 
-    return () => window.removeEventListener("resize", updateScreenWidth);
+    const handleOutsideClick = (e: MouseEvent) => {
+      if (shareRef.current && !shareRef.current.contains(e.target as Node)) {
+        setTooltipVisible(false);
+        setShare(false);
+        setAnimate(false);
+      }
+    };
+
+    const handleEscKeyPress = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setTooltipVisible(false);
+        setShare(false);
+        setAnimate(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleOutsideClick);
+    document.addEventListener("keydown", handleEscKeyPress);
+
+    return () => {
+      window.removeEventListener("resize", updateScreenWidth);
+      document.addEventListener("mousedown", handleOutsideClick);
+      document.addEventListener("keydown", handleEscKeyPress);
+    };
   }, []);
 
   const handleClick = () => {
@@ -72,14 +100,17 @@ export default function Article({ articleTitle }: { articleTitle: string }) {
           )}
         >
           {share ? (
-            <div className="sm:px-10text-ac-light-grayish-blue -mr-16 flex h-16 flex-grow items-center justify-start rounded-b-xl px-8">
+            <div
+              ref={shareRef}
+              className="sm:px-10text-ac-light-grayish-blue -mr-16 flex h-16 flex-grow items-center justify-start rounded-b-xl px-8"
+            >
               <h3 className="pr-4 text-body uppercase tracking-[0.4rem] text-ac-grayish-blue">
                 share
               </h3>
               <ul className="flex items-center gap-4">
                 {shareLinks.map((link) => (
                   <li key={link.site}>
-                    <a href={link.url}>
+                    <a href={link.url} target="_blank">
                       <Image src={link.icon} alt={link.site} />
                     </a>
                   </li>
@@ -87,7 +118,7 @@ export default function Article({ articleTitle }: { articleTitle: string }) {
               </ul>
             </div>
           ) : (
-            <div className="fade-in-bounce">
+            <div className="">
               <div className=" flex items-center justify-center gap-4 px-8 sm:px-10">
                 <Image
                   src={article.author.img}
@@ -106,7 +137,10 @@ export default function Article({ articleTitle }: { articleTitle: string }) {
             </div>
           )}
           {tooltipVisible && (
-            <div className="fade-in-bounce tooltip -right-[70px] -top-[5rem] mt-2 rounded-lg bg-ac-very-dark-grayish-blue px-8 py-4 shadow-lg">
+            <div
+              ref={shareRef}
+              className="fade-in-bounce tooltip -right-[70px] -top-[5rem] mt-2 rounded-lg bg-ac-very-dark-grayish-blue px-8 py-4 shadow-lg"
+            >
               <div className="flex">
                 <h3 className="top-full z-50 pr-4 text-body uppercase tracking-[0.4rem] text-ac-grayish-blue">
                   share
@@ -114,7 +148,7 @@ export default function Article({ articleTitle }: { articleTitle: string }) {
                 <ul className="flex items-center gap-4">
                   {shareLinks.map((link) => (
                     <li key={link.site}>
-                      <a href={link.url}>
+                      <a target="_blank" href={link.url}>
                         <Image src={link.icon} alt={link.site} />
                       </a>
                     </li>
@@ -124,6 +158,7 @@ export default function Article({ articleTitle }: { articleTitle: string }) {
             </div>
           )}
           <button
+            // ref={shareRef}
             onClick={handleClick}
             className={cn(
               "mr-8 flex h-8 w-8 items-center justify-center rounded-full",
