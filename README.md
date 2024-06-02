@@ -40,7 +40,7 @@ challenges.
 Implementing this challenge with NextJS made it more interesting. It gave me
 a broader scope for learning.
 
-I learned how to use NextJS `Image` component with `picture` tag to render the
+I learned how to use NextJS `Image` tag to render the
 appropriate image file for the screen size. I also sharpened my `grid` skills
 from this challenge.
 

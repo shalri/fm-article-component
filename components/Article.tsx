@@ -158,7 +158,6 @@ export default function Article({ articleTitle }: { articleTitle: string }) {
             </div>
           )}
           <button
-            // ref={shareRef}
             onClick={handleClick}
             className={cn(
               "mr-8 flex h-8 w-8 items-center justify-center rounded-full",
@@ -166,6 +165,7 @@ export default function Article({ articleTitle }: { articleTitle: string }) {
                 ? "bg-ac-desaturated-dark-blue"
                 : "bg-ac-light-grayish-blue",
             )}
+            aria-label="Share Links"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
